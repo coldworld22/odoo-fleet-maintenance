@@ -73,6 +73,9 @@ class FleetMaintenanceApi(http.Controller):
             request.env["fleet.vehicle.odometer"].create({
                 "vehicle_id": vehicle.id, "value": value, "date": date,
             })
+            # fleet.vehicle.odometer is computed without dependencies, so the cached value
+            # (and every plan's due status built on it) is stale until invalidated.
+            request.env.invalidate_all()
         except (AccessError, ValidationError) as e:
             return _error(403, "forbidden", str(e))
 
