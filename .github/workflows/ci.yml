@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install ruff==0.8.4
+      - run: ruff check .
+      - name: XML is well formed
+        run: |
+          sudo apt-get install -y -qq libxml2-utils > /dev/null
+          find . -name '*.xml' -print0 | xargs -0 -n1 xmllint --noout
+
+  test:
+    name: Odoo 17 tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: odoo
+          POSTGRES_PASSWORD: odoo
+          POSTGRES_DB: postgres
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      # Installs the module into a fresh database and runs its tests in the official image.
+      - name: Install module and run tests
+        run: |
+          docker run --rm --network host \
+            -e HOST=localhost -e USER=odoo -e PASSWORD=odoo \
+            -v "$GITHUB_WORKSPACE:/mnt/extra-addons:ro" \
+            odoo:17.0 odoo -d test --without-demo=all \
+              -i fleet_maintenance_plan --test-enable --test-tags /fleet_maintenance_plan \
+              --stop-after-init --log-level=test --http-port=8069 2>&1 | tee odoo.log
+      - name: Fail on errors in the log
+        run: |
+          if grep -E " (ERROR|CRITICAL) " odoo.log; then exit 1; fi
+          grep -E "fleet_maintenance_plan: [0-9]+ tests" odoo.log || true
