@@ -12,7 +12,7 @@ class TestOdometerApi(HttpCase, MaintenanceCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.api_user = new_test_user(
-            cls.env, login="telematics", groups="base.group_user,fleet.fleet_group_user"
+            cls.env, login="telematics", groups="base.group_user,fleet.fleet_group_manager"
         )
         apikeys = cls.env["res.users.apikeys"].with_user(cls.api_user)
         cls.key = apikeys._generate("rpc", "telematics")

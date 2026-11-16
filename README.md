@@ -43,8 +43,11 @@ they do without the module.
 
 ## REST API
 
-Create an API key in Odoo (*Preferences → Account Security → New API Key*) for a user in the Fleet
-group, then send it as a bearer token.
+Create a dedicated integration user and an API key for it (*Preferences → Account Security → New API
+Key*), then send the key as a bearer token. Requests run as that user, so Fleet's record rules
+apply: a Fleet *Officer* only reaches the vehicles they manage. A telematics feed for the whole fleet
+needs a Fleet *Administrator* user, and each device or vendor should get its own key so it can be
+revoked on its own.
 
 ```bash
 # Record an odometer reading
