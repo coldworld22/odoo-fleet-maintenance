@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_service_order" model="ir.actions.report">
+        <field name="name">Service Order</field>
+        <field name="model">fleet.vehicle.log.services</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">fleet_maintenance_plan.report_service_order</field>
+        <field name="report_file">fleet_maintenance_plan.report_service_order</field>
+        <field name="print_report_name">'Service Order - %s' % (object.vehicle_id.license_plate or object.vehicle_id.name)</field>
+        <field name="binding_model_id" ref="fleet.model_fleet_vehicle_log_services"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_service_order">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="service">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Service Order</h2>
+                        <div class="row mt-3 mb-3">
+                            <div class="col-6">
+                                <strong>Vehicle</strong>
+                                <div t-field="service.vehicle_id.name"/>
+                                <div>Plate: <span t-field="service.vehicle_id.license_plate"/></div>
+                                <div t-if="service.vehicle_id.driver_id">
+                                    Driver: <span t-field="service.vehicle_id.driver_id"/>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <strong>Service</strong>
+                                <div t-field="service.service_type_id"/>
+                                <div>Date: <span t-field="service.date"/></div>
+                                <div>Odometer: <span t-esc="service.vehicle_id.odometer"/>
+                                    <span t-field="service.vehicle_id.odometer_unit"/></div>
+                                <div t-if="service.vendor_id">Vendor: <span t-field="service.vendor_id"/></div>
+                            </div>
+                        </div>
+
+                        <p t-if="service.description"><strong>Work: </strong><span t-field="service.description"/></p>
+
+                        <t t-set="plan" t-value="service.maintenance_plan_id"/>
+                        <table t-if="plan.part_line_ids" class="table table-sm">
+                            <thead>
+                                <tr><th>Part</th><th class="text-end">Quantity</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="plan.part_line_ids" t-as="line">
+                                    <td><span t-field="line.product_id"/></td>
+                                    <td class="text-end"><span t-field="line.quantity"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p t-if="service.purchase_order_id">
+                            Parts order: <span t-field="service.purchase_order_id.name"/>
+                        </p>
+
+                        <div class="row mt-5">
+                            <div class="col-6">Technician signature: ____________________</div>
+                            <div class="col-6">Fleet manager signature: ____________________</div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>
