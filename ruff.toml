@@ -1,0 +1,11 @@
+line-length = 100
+target-version = "py310"
+
+[lint]
+select = ["E", "F", "W", "B", "UP", "I"]
+# Odoo's manifest is a bare dict expression, and its __init__ files import for side effects.
+per-file-ignores = { "__manifest__.py" = ["B018"], "__init__.py" = ["F401", "I001"] }
+
+[lint.isort]
+known-first-party = ["odoo"]
+section-order = ["future", "standard-library", "third-party", "first-party", "local-folder"]

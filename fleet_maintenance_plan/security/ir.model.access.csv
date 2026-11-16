@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_plan_user,plan user,model_fleet_maintenance_plan,fleet.fleet_group_user,1,1,1,0
+access_plan_manager,plan manager,model_fleet_maintenance_plan,fleet.fleet_group_manager,1,1,1,1
+access_plan_part_user,plan part user,model_fleet_maintenance_plan_part,fleet.fleet_group_user,1,1,1,1

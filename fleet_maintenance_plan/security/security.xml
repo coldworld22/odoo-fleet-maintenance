@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Multi-company: a plan is only visible in the companies the user is working in. -->
+    <record id="rule_fleet_maintenance_plan_company" model="ir.rule">
+        <field name="name">Maintenance plan: multi-company</field>
+        <field name="model_id" ref="model_fleet_maintenance_plan"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>
