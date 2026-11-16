@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="fleet_vehicle_log_services_view_form_maintenance" model="ir.ui.view">
+        <field name="name">fleet.vehicle.log.services.form.maintenance</field>
+        <field name="model">fleet.vehicle.log.services</field>
+        <field name="inherit_id" ref="fleet.fleet_vehicle_log_services_view_form"/>
+        <field name="arch" type="xml">
+            <field name="service_type_id" position="after">
+                <field name="maintenance_plan_id"/>
+                <field name="purchase_order_id" invisible="not purchase_order_id"/>
+            </field>
+        </field>
+    </record>
+</odoo>

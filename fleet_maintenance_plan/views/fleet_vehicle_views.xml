@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="fleet_vehicle_view_form_maintenance" model="ir.ui.view">
+        <field name="name">fleet.vehicle.form.maintenance</field>
+        <field name="model">fleet.vehicle</field>
+        <field name="inherit_id" ref="fleet.fleet_vehicle_view_form"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button name="action_view_maintenance_plans" type="object" class="oe_stat_button"
+                        icon="fa-calendar-check-o">
+                    <field name="maintenance_due_count" widget="statinfo" string="Maintenance Due"/>
+                </button>
+            </div>
+        </field>
+    </record>
+</odoo>
